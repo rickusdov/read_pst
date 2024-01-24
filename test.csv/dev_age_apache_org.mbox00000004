@@ -1,0 +1,577 @@
+From "git@apache.org" Wed Dec 27 06:01:22 2023
+Status: RO
+From: "glazkovalex (via GitHub)" <git@apache.org>
+Subject: [I] How to install Apache Age 1.4.0 on Ubuntu server 20.04 LTS with Postgresql 15.5? [age]
+To: dev@age.apache.org
+Date: Wed, 27 Dec 2023 04:01:22 +0000
+Message-Id: <I_kwDOEHflqs56mZFR@gitbox.apache.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="--boundary-LibPST-iamunique-139711092_-_-"
+
+
+----boundary-LibPST-iamunique-139711092_-_-
+Content-Type: text/plain; charset="utf-8"
+
+
+glazkovalex opened a new issue, #1460:
+URL: https://github.com/apache/age/issues/1460
+
+   1. I used the instructions https://age.apache.org/age-manual/master/intro/setup.html
+   2. I installed `sudo apt install postgresql-15 postgresql-server-dev-15` and configured postgresql 15.5. I checked that it works.
+   3. I checked my pg_config. He's like this:
+   ```
+   alex@Ubuntu-PostgreSQL:~/apache-age-1.4.0$ pg_config
+   BINDIR = /usr/lib/postgresql/15/bin
+   DOCDIR = /usr/share/doc/postgresql-doc-15
+   HTMLDIR = /usr/share/doc/postgresql-doc-15
+   INCLUDEDIR = /usr/include/postgresql
+   PKGINCLUDEDIR = /usr/include/postgresql
+   INCLUDEDIR-SERVER = /usr/include/postgresql/15/server
+   LIBDIR = /usr/lib/x86_64-linux-gnu
+   PKGLIBDIR = /usr/lib/postgresql/15/lib
+   LOCALEDIR = /usr/share/locale
+   MANDIR = /usr/share/postgresql/15/man
+   SHAREDIR = /usr/share/postgresql/15
+   SYSCONFDIR = /etc/postgresql-common
+   PGXS = /usr/lib/postgresql/15/lib/pgxs/src/makefiles/pgxs.mk
+   CONFIGURE =  '--build=x86_64-linux-gnu' '--prefix=/usr' '--includedir=${prefix}/include' '--mandir=${prefix}/share/man' '--infodir=${prefix}/share/info' '--sysconfdir=/etc' '--localstatedir=/var' '--disable-silent-rules' '--libdir=${prefix}/lib/x86_64-linux-gnu' '--runstatedir=/run' '--disable-maintainer-mode' '--disable-dependency-tracking' '--with-tcl' '--with-perl' '--with-python' '--with-pam' '--with-openssl' '--with-libxml' '--with-libxslt' '--mandir=/usr/share/postgresql/15/man' '--docdir=/usr/share/doc/postgresql-doc-15' '--sysconfdir=/etc/postgresql-common' '--datarootdir=/usr/share/' '--datadir=/usr/share/postgresql/15' '--bindir=/usr/lib/postgresql/15/bin' '--libdir=/usr/lib/x86_64-linux-gnu/' '--libexecdir=/usr/lib/postgresql/' '--includedir=/usr/include/postgresql/' '--with-extra-version= (Ubuntu 15.5-1.pgdg20.04+1)' '--enable-nls' '--enable-thread-safety' '--enable-debug' '--enable-dtrace' '--disable-rpath' '--with-uuid=e2fs' '--with-gnu-ld' '--with-gssapi' '--with-ld
+ ap' '--with-pgport=5432' '--with-system-tzdata=/usr/share/zoneinfo' 'AWK=mawk' 'MKDIR_P=/bin/mkdir -p' 'PROVE=/usr/bin/prove' 'PYTHON=/usr/bin/python3' 'TAR=/bin/tar' 'XSLTPROC=xsltproc --nonet' 'CFLAGS=-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer' 'LDFLAGS=-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-z,now' '--enable-tap-tests' '--with-icu' '--with-llvm' 'LLVM_CONFIG=/usr/bin/llvm-config-10' 'CLANG=/usr/bin/clang-10' '--with-lz4' '--with-zstd' '--with-systemd' '--with-selinux' 'build_alias=x86_64-linux-gnu' 'CPPFLAGS=-Wdate-time -D_FORTIFY_SOURCE=2' 'CXXFLAGS=-g -O2 -fstack-protector-strong -Wformat -Werror=format-security'
+   CC = gcc
+   CPPFLAGS = -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2
+   CFLAGS = -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer
+   CFLAGS_SL = -fPIC
+   LDFLAGS = -Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-z,now -L/usr/lib/llvm-10/lib -Wl,--as-needed
+   LDFLAGS_EX =
+   LDFLAGS_SL =
+   LIBS = -lpgcommon -lpgport -lselinux -lzstd -llz4 -lxslt -lxml2 -lpam -lssl -lcrypto -lgssapi_krb5 -lz -lreadline -lpthread -lrt -ldl -lm
+   VERSION = PostgreSQL 15.5 (Ubuntu 15.5-1.pgdg20.04+1)
+   ```
+   4. downloaded the archive `wget -c https://github.com/apache/age/archive/refs/tags/PG15/v1.4.0-rc0.tar.gz`
+   5. unpack the archive: `tar -xvf v1.4.0-rc0.tar.gz`. 
+   ```
+   alex@Ubuntu-PostgreSQL:~/age-PG15-v1.4.0-rc0$ dir -l
+   total 172
+   -rw-rw-r-- 1 alex alex 85507 авг 22 18:17 age--1.4.0.sql
+   -rw-rw-r-- 1 alex alex   900 авг 22 18:17 age.control
+   -rw-rw-r-- 1 alex alex  2629 авг 22 18:17 clang-format.5
+   -rw-rw-r-- 1 alex alex  3528 авг 22 18:17 CONTRIBUTING.md
+   drwxrwxr-x 3 alex alex  4096 авг 22 18:17 docker
+   drwxrwxr-x 6 alex alex  4096 авг 22 18:17 drivers
+   drwxrwxr-x 2 alex alex  4096 авг 22 18:17 img
+   -rw-rw-r-- 1 alex alex 12570 авг 22 18:17 LICENSE
+   -rw-rw-r-- 1 alex alex  5101 авг 22 18:17 Makefile
+   -rw-rw-r-- 1 alex alex  2290 авг 22 18:17 META.json
+   -rw-rw-r-- 1 alex alex   321 авг 22 18:17 NOTICE
+   -rw-rw-r-- 1 alex alex 12570 авг 22 18:17 README.md
+   drwxrwxr-x 5 alex alex  4096 авг 22 18:17 regress
+   -rw-rw-r-- 1 alex alex  2866 авг 22 18:17 RELEASE
+   drwxrwxr-x 4 alex alex  4096 авг 22 18:17 src
+   drwxrwxr-x 3 alex alex  4096 авг 22 18:17 tools```
+   ```
+   6. executed the command: `make install` . The following error output was obtained:
+   ```
+   alex@Ubuntu-PostgreSQL:~/age-PG15-v1.4.0-rc0$ make install
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/age.o src/backend/age.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/catalog/ag_catalog.o src/backend/catalog/ag_catalog.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/catalog/ag_graph.o src/backend/catalog/ag_graph.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/catalog/ag_label.o src/backend/catalog/ag_label.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/catalog/ag_namespace.o src/backend/catalog/ag_namespace.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/commands/graph_commands.o src/backend/commands/graph_commands.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/commands/label_commands.o src/backend/commands/label_commands.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/executor/cypher_create.o src/backend/executor/cypher_create.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/executor/cypher_merge.o src/backend/executor/cypher_merge.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/executor/cypher_set.o src/backend/executor/cypher_set.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/executor/cypher_utils.o src/backend/executor/cypher_utils.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/nodes/ag_nodes.o src/backend/nodes/ag_nodes.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/nodes/cypher_copyfuncs.o src/backend/nodes/cypher_copyfuncs.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/nodes/cypher_outfuncs.o src/backend/nodes/cypher_outfuncs.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/nodes/cypher_readfuncs.o src/backend/nodes/cypher_readfuncs.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/optimizer/cypher_createplan.o src/backend/optimizer/cypher_createplan.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/optimizer/cypher_pathnode.o src/backend/optimizer/cypher_pathnode.c
+   gcc -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -g -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -fno-omit-frame-pointer -fPIC -I.//src/include -I.//src/include/parser -I. -I./ -I/usr/include/postgresql/15/server -I/usr/include/postgresql/internal  -Wdate-time -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -I/usr/include/libxml2   -c -o src/backend/optimizer/cypher_paths.o src/backend/optimizer/cypher_paths.c
+   /usr/bin/flex -b  -o'src/backend/parser/ag_scanner.c' src/backend/parser/ag_scanner.l
+   make: /usr/bin/flex: Command not found
+   make: *** [/usr/lib/postgresql/15/lib/pgxs/src/makefiles/../../src/Makefile.global:784: src/backend/parser/ag_scanner.c] Error 127
+   ```
+   7. I tried to specify the path to my pg_config. The result is the same error:
+   ```
+   alex@Ubuntu-PostgreSQL:~/age-PG15-v1.4.0-rc0$ make PG_CONFIG=/usr/lib/postgresql/15/bin/pg_config install
+   /usr/bin/flex -b  -o'src/backend/parser/ag_scanner.c' src/backend/parser/ag_scanner.l
+   make: /usr/bin/flex: Command not found
+   make: *** [/usr/lib/postgresql/15/lib/pgxs/src/makefiles/../../src/Makefile.global:784: src/backend/parser/ag_scanner.c] Error 127
+   ```
+   What can I do to install Apache Age on my Postgreslq 15.5 on Ubuntu server 20.04 LTS? 
+   Isn't there a regular package installed via `sudo apt install` for Ubuntu server, so as not to use the magic of `make install`?
+
+
+-- 
+This is an automated message from the Apache Git Service.
+To respond to the message, please log on to GitHub and use the
+URL above to go to the specific comment.
+
+To unsubscribe, e-mail: dev-unsubscribe@age.apache.org.apache.org
+
+For queries about this service, please contact Infrastructure at:
+users@infra.apache.org
+
+
+
+----boundary-LibPST-iamunique-139711092_-_---
+
+From "git@apache.org" Wed Dec 27 06:30:19 2023
+Status: RO
+From: "glazkovalex (via GitHub)" <git@apache.org>
+Subject: Re: [I] How to install Apache Age 1.4.0 on Ubuntu server 20.04 LTS with Postgresql 15.5? [age]
+To: dev@age.apache.org
+Date: Wed, 27 Dec 2023 04:30:19 +0000
+Message-Id: <I_kwDOEHflqs56mZFR-3a3ff95e-b1b4-448d-b905-980847be0b2e@gitbox.apache.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="--boundary-LibPST-iamunique-2033129168_-_-"
+
+
+----boundary-LibPST-iamunique-2033129168_-_-
+Content-Type: text/plain; charset="iso-8859-1"
+
+
+glazkovalex closed issue #1460: How to install Apache Age 1.4.0 on Ubuntu server 20.04 LTS with Postgresql 15.5?
+URL: https://github.com/apache/age/issues/1460
+
+
+-- 
+This is an automated message from the Apache Git Service.
+To respond to the message, please log on to GitHub and use the
+URL above to go to the specific comment.
+
+To unsubscribe, e-mail: dev-unsubscribe@age.apache.org
+
+For queries about this service, please contact Infrastructure at:
+users@infra.apache.org
+
+
+
+----boundary-LibPST-iamunique-2033129168_-_---
+
+From "git@apache.org" Wed Dec 27 06:30:20 2023
+Status: RO
+From: "glazkovalex (via GitHub)" <git@apache.org>
+Subject: Re: [I] How to install Apache Age 1.4.0 on Ubuntu server 20.04 LTS with Postgresql 15.5? [age]
+To: dev@age.apache.org
+Date: Wed, 27 Dec 2023 04:30:20 +0000
+Message-Id: <I_kwDOEHflqs56mZFR-24d9213c-acff-47cf-a478-561048ca7913@gitbox.apache.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="--boundary-LibPST-iamunique-198053877_-_-"
+
+
+----boundary-LibPST-iamunique-198053877_-_-
+Content-Type: text/plain; charset="iso-8859-1"
+
+
+glazkovalex commented on issue #1460:
+URL: https://github.com/apache/age/issues/1460#issuecomment-1869937588
+
+   Everything is assembled and working. I just forgot to do step number 0.: `sudo apt-get install build-essential libreadline-dev zlib1g-dev flex bison`
+   Please delete this question of mine.
+
+
+-- 
+This is an automated message from the Apache Git Service.
+To respond to the message, please log on to GitHub and use the
+URL above to go to the specific comment.
+
+To unsubscribe, e-mail: dev-unsubscribe@age.apache.org
+
+For queries about this service, please contact Infrastructure at:
+users@infra.apache.org
+
+
+
+----boundary-LibPST-iamunique-198053877_-_---
+
+From "git@apache.org" Wed Dec 27 15:36:03 2023
+Status: RO
+From: "MuhammadTahaNaveed (via GitHub)" <git@apache.org>
+Subject: [I] Usage of containment op instead of equal in property constraints (for lists and maps) [age]
+To: dev@age.apache.org
+Date: Wed, 27 Dec 2023 13:36:03 +0000
+Message-Id: <I_kwDOEHflqs56oSlE@gitbox.apache.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="--boundary-LibPST-iamunique-156161929_-_-"
+
+
+----boundary-LibPST-iamunique-156161929_-_-
+Content-Type: text/plain; charset="iso-8859-1"
+
+
+MuhammadTahaNaveed opened a new issue, #1461:
+URL: https://github.com/apache/age/issues/1461
+
+   Usage of containment op instead of equal in property constraints (for lists and maps) outputs different results as compared to neo4j. Is this intentional?
+   
+   **Data:**
+   ```
+   CREATE (n {list:[1,2,3,4]}) return n
+   ```
+   
+   **Query with issue:**
+   ```
+   MATCH (n {list:[4]}) return n
+   ```
+   
+   **Results**
+   
+   `Neo4j:`
+   ```
+   No rows returned
+   ```
+   `Age:`
+   ```
+   pg16=# SELECT * FROM cypher('issue_', $$MATCH (n {list:[4]}) return n$$) AS (u agtype);
+                                            u                                          
+   ------------------------------------------------------------------------------------
+    {"id": 281474976710657, "label": "", "properties": {"list": [1, 2, 3, 4]}}::vertex
+   (1 row)
+   ```
+
+
+-- 
+This is an automated message from the Apache Git Service.
+To respond to the message, please log on to GitHub and use the
+URL above to go to the specific comment.
+
+To unsubscribe, e-mail: dev-unsubscribe@age.apache.org.apache.org
+
+For queries about this service, please contact Infrastructure at:
+users@infra.apache.org
+
+
+
+----boundary-LibPST-iamunique-156161929_-_---
+
+From "john.gemignani@bitnine.net" Wed Dec 27 20:32:25 2023
+Status: RO
+From: "John Gemignani" <john.gemignani@bitnine.net>
+Subject: Re: [PR] Extend access(->, ->>), addition and subtraction operators(#1258) [age]
+To: dev@age.apache.org
+Cc: commits@age.apache.org
+Date: Wed, 27 Dec 2023 18:32:25 +0000
+Message-Id: <CAFOrqz3sn9UBf2TiB8DkNQdRzoY1i4hGt-_tzi7OvYupBoVFZw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="--boundary-LibPST-iamunique-584433057_-_-"
+
+
+----boundary-LibPST-iamunique-584433057_-_-
+Content-Type: text/plain; charset="utf-8"
+
+Please also provide one for PG15.
+
+Thanks!
+
+John
+
+On Tue, Dec 26, 2023 at 8:50 AM Zainab-Saad (via GitHub) <git@apache.org>
+wrote:
+
+>
+> Zainab-Saad opened a new pull request, #1459:
+> URL: https://github.com/apache/age/pull/1459
+>
+>    This PR is a part of a patch originally authored by Josh Innis for #282
+> . The tasks done here are:
+>
+>    - Enabled the use of access operator with agtype as the RHS operand,
+> allowing this operator to be used within cypher queries
+>    - Extended addition operator to concatenate in case any or both
+> operands are non-scalar or scalar vertex/edge/path
+>    - Extended subtract operator to delete specified keys from object or
+> elements at specified indexes from array
+>    - Added and modified regression tests relevant to the above changes
+>
+>
+> --
+> This is an automated message from the Apache Git Service.
+> To respond to the message, please log on to GitHub and use the
+> URL above to go to the specific comment.
+>
+> To unsubscribe, e-mail: commits-unsubscribe@age.apache.org
+>
+> For queries about this service, please contact Infrastructure at:
+> users@infra.apache.org
+>
+>
+
+----boundary-LibPST-iamunique-584433057_-_---
+
+From "git@apache.org" Wed Dec 27 21:11:19 2023
+Status: RO
+From: "blaluc (via GitHub)" <git@apache.org>
+Subject: [I] "Hierarchical: graph label organization"....How to? [age]
+To: dev@age.apache.org
+Date: Wed, 27 Dec 2023 19:11:19 +0000
+Message-Id: <I_kwDOEHflqs56pfif@gitbox.apache.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="--boundary-LibPST-iamunique-828226259_-_-"
+
+
+----boundary-LibPST-iamunique-828226259_-_-
+Content-Type: text/plain; charset="iso-8859-1"
+
+
+blaluc opened a new issue, #1462:
+URL: https://github.com/apache/age/issues/1462
+
+   One of the features listed in doc is "Hierarchical: graph label organization", but I didn't get to find any example about this feature in the documentation. How to declare a label hierarchy?
+
+
+-- 
+This is an automated message from the Apache Git Service.
+To respond to the message, please log on to GitHub and use the
+URL above to go to the specific comment.
+
+To unsubscribe, e-mail: dev-unsubscribe@age.apache.org.apache.org
+
+For queries about this service, please contact Infrastructure at:
+users@infra.apache.org
+
+
+
+----boundary-LibPST-iamunique-828226259_-_---
+
+From "git@apache.org" Thu Dec 28 02:16:25 2023
+Status: RO
+From: "rafsun42 (via GitHub)" <git@apache.org>
+Subject: Re: [I] Periodic regression test "expr" failures [age]
+To: dev@age.apache.org
+Date: Thu, 28 Dec 2023 00:16:25 +0000
+Message-Id: <I_kwDOEHflqs543lkW-2486170b-be2d-4a24-a2db-16fa5361df04@gitbox.apache.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="--boundary-LibPST-iamunique-1108145917_-_-"
+
+
+----boundary-LibPST-iamunique-1108145917_-_-
+Content-Type: text/plain; charset="iso-8859-1"
+
+
+rafsun42 commented on issue #1439:
+URL: https://github.com/apache/age/issues/1439#issuecomment-1870708038
+
+   Interesting.
+   
+   As Postgres [suggests](https://www.postgresql.org/docs/current/regress-evaluation.html#REGRESS-EVALUATION-ORDERING-DIFFERENCES), regression tests are 'not so pedantic'. Therefore, some tests might fail despite the test queries yielding correct results.
+   
+   The first one is failing due to row-ordering difference. However, the output itself is correct. Since the order is not well-defined by the specification, we can assume ordering differences do not indicate incorrect result.
+   
+   The second one is failing due to an addition of the notice 'CONTEXT:  parallel worker'. Since the diff does not show any other changes, I am assuming the query is producing the expected result. Except it is being executed by parallel workers.
+   
+   It may be possible to fix the fails by adding an order by clause and setting config parameters.
+
+
+-- 
+This is an automated message from the Apache Git Service.
+To respond to the message, please log on to GitHub and use the
+URL above to go to the specific comment.
+
+To unsubscribe, e-mail: dev-unsubscribe@age.apache.org
+
+For queries about this service, please contact Infrastructure at:
+users@infra.apache.org
+
+
+
+----boundary-LibPST-iamunique-1108145917_-_---
+
+From "git@apache.org" Thu Dec 28 02:35:44 2023
+Status: RO
+From: "rafsun42 (via GitHub)" <git@apache.org>
+Subject: Re: [I] "Hierarchical: graph label organization"....How to? [age]
+To: dev@age.apache.org
+Date: Thu, 28 Dec 2023 00:35:44 +0000
+Message-Id: <I_kwDOEHflqs56pfif-023c0c64-8e03-4d00-8f2e-e27fdf977509@gitbox.apache.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="--boundary-LibPST-iamunique-1154504253_-_-"
+
+
+----boundary-LibPST-iamunique-1154504253_-_-
+Content-Type: text/plain; charset="iso-8859-1"
+
+
+rafsun42 commented on issue #1462:
+URL: https://github.com/apache/age/issues/1462#issuecomment-1870715693
+
+   There is a [PR](https://github.com/apache/age/pull/1452) for multiple label support that is currently under review. It allows modelling hierarchy like below-
+   ```
+   CREATE (:Parent)
+   CREATE (:Parent:Child1)
+   CREATE (:Parent:Child1:Child2)
+   
+   MATCH (:Parent) -- returns all three
+   MATCH (:Child1) -- returns last two
+   ```
+
+
+-- 
+This is an automated message from the Apache Git Service.
+To respond to the message, please log on to GitHub and use the
+URL above to go to the specific comment.
+
+To unsubscribe, e-mail: dev-unsubscribe@age.apache.org
+
+For queries about this service, please contact Infrastructure at:
+users@infra.apache.org
+
+
+
+----boundary-LibPST-iamunique-1154504253_-_---
+
+From "git@apache.org" Thu Dec 28 10:55:00 2023
+Status: RO
+From: "RisottoNacho (via GitHub)" <git@apache.org>
+Subject: [I] Error when trying to run with "npm run start" [age-viewer]
+To: dev@age.apache.org
+Date: Thu, 28 Dec 2023 08:55:00 +0000
+Message-Id: <I_kwDOF7jwYs56rSuG@gitbox.apache.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="--boundary-LibPST-iamunique-1714403864_-_-"
+
+
+----boundary-LibPST-iamunique-1714403864_-_-
+Content-Type: text/plain; charset="iso-8859-1"
+
+
+RisottoNacho opened a new issue, #166:
+URL: https://github.com/apache/age-viewer/issues/166
+
+   **Description of the bug**
+   After executing "npm run setup" I try to run "npm run start" but get the following error:
+   ```
+   Starting the development server...
+   
+   /home/nacho/Documentos/GitHub/age-viewer/frontend/node_modules/react-scripts/scripts/start.js:19
+     throw err;
+     ^
+   
+   Error: error:0308010C:digital envelope routines::unsupported
+       at new Hash (node:internal/crypto/hash:69:19)
+       at Object.createHash (node:crypto:133:10)
+       at module.exports (/home/nacho/Documentos/GitHub/age-viewer/frontend/node_modules/webpack/lib/util/createHash.js:135:53)
+       at NormalModule._initBuildHash (/home/nacho/Documentos/GitHub/age-viewer/frontend/node_modules/webpack/lib/NormalModule.js:417:16)
+       at /home/nacho/Documentos/GitHub/age-viewer/frontend/node_modules/webpack/lib/NormalModule.js:452:10
+       at /home/nacho/Documentos/GitHub/age-viewer/frontend/node_modules/webpack/lib/NormalModule.js:323:13
+       at /home/nacho/Documentos/GitHub/age-viewer/frontend/node_modules/loader-runner/lib/LoaderRunner.js:367:11
+       at /home/nacho/Documentos/GitHub/age-viewer/frontend/node_modules/loader-runner/lib/LoaderRunner.js:233:18
+       at context.callback (/home/nacho/Documentos/GitHub/age-viewer/frontend/node_modules/loader-runner/lib/LoaderRunner.js:111:13)
+       at /home/nacho/Documentos/GitHub/age-viewer/frontend/node_modules/babel-loader/lib/index.js:59:103 {
+     opensslErrorStack: [ 'error:03000086:digital envelope routines::initialization error' ],
+     library: 'digital envelope routines',
+     reason: 'unsupported',
+     code: 'ERR_OSSL_EVP_UNSUPPORTED'
+   }
+   
+   Node.js v18.17.1
+   ERROR: "front" exited with 1.
+   ```
+   I updated to the latest pm2 version but the problem still persists. The same error pops if I try to execute "npm run build-front ".
+   
+   **To Reproduce**
+   1. Run "npm run setup" 
+   2.  Run "npm run start" 
+   
+   **Desktop**
+    - OS: Ubuntu 22.04
+    - Node.js v18.17.1
+   
+   
+
+
+-- 
+This is an automated message from the Apache Git Service.
+To respond to the message, please log on to GitHub and use the
+URL above to go to the specific comment.
+
+To unsubscribe, e-mail: dev-unsubscribe@age.apache.org.apache.org
+
+For queries about this service, please contact Infrastructure at:
+users@infra.apache.org
+
+
+
+----boundary-LibPST-iamunique-1714403864_-_---
+
+From "git@apache.org" Thu Dec 28 18:34:56 2023
+Status: RO
+From: "FrancescoSillani (via GitHub)" <git@apache.org>
+Subject: [I] Cypher query to exlude subpaths (or return only full paths) [age]
+To: dev@age.apache.org
+Date: Thu, 28 Dec 2023 16:34:56 +0000
+Message-Id: <I_kwDOEHflqs56tB4s@gitbox.apache.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="--boundary-LibPST-iamunique-933737565_-_-"
+
+
+----boundary-LibPST-iamunique-933737565_-_-
+Content-Type: text/plain; charset="iso-8859-1"
+
+
+FrancescoSillani opened a new issue, #1464:
+URL: https://github.com/apache/age/issues/1464
+
+   Hello all,
+   
+   I have the following (simplified) scenario:
+   
+   A -> [R] -> B
+   B -> [R] -> C
+   
+   where A, B, C are vertex of my graph, and R is a relation. 
+   
+   With the following query:
+   
+   MATCH p = (t1)-[R*]->(t2)
+   
+   the following paths are returned:
+   
+   A -> B, 
+   B->C, 
+   A -> B -> C
+   
+   Is it possible to build a query that returns only the following path: A -> B -> C?
+   
+   I was thinking about 
+   
+   - adding a WHERE clause similar to "WHERE not t2 -> [R] -> ()" 
+   - adding a MATCH similar to "MATCH NOT (p1 =  (t2)-[R]->())"
+   
+   but I'm not able to obtain a valid query... 
+   
+   Could you please me give any advice?
+   
+   Thanx a lot in advance
+   
+   
+   
+   
+
+
+-- 
+This is an automated message from the Apache Git Service.
+To respond to the message, please log on to GitHub and use the
+URL above to go to the specific comment.
+
+To unsubscribe, e-mail: dev-unsubscribe@age.apache.org.apache.org
+
+For queries about this service, please contact Infrastructure at:
+users@infra.apache.org
+
+
+
+----boundary-LibPST-iamunique-933737565_-_---
+
