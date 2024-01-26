@@ -1,51 +1,72 @@
 from libratom.lib.pff import PffArchive
 from email import generator
+import pypff
 from pathlib import Path
 import time
 import mysql.connector
-import pymysql
+#import pymysql
 
-def connect_to_db():
-    # Connection details for the first server (1.1.1.1.1.1)
-    intermediary_host = '37.27.52.55'
-    intermediary_user = 'dolveramails'
-    intermediary_password = 'AUQABgWGB4yCAgGEAAYFhgeMggIBxAAG'
-    intermediary_database = 'email_archyve'
-
-    # Connect to the first server
-    intermediary_connection = pymysql.connect(host=intermediary_host, user=intermediary_user,
-                                              password=intermediary_password, database=intermediary_database)
-
-    # Retrieve the connection details for the second server (2.2.2.2.2)
-    cursor = intermediary_connection.cursor()
-    cursor.execute("SELECT 192.168.56.55, dolveramails, AUQABgWGB4yCAgGEAAYFhgeMggIBxAAG, email_archyve FROM server_mapping WHERE id = 1")
-    actual_host, actual_user, actual_password, actual_database = cursor.fetchone()
-
-    # Close the connection to the first server
-    intermediary_connection.close()
-
-    # Connect to the second server
-    actual_connection = pymysql.connect(host=actual_host, user=actual_user,
-                                        password=actual_password, database=actual_database)
-    return 1
-cur = connect_to_db()
-sql = "SELECT * FROM ac_directories"
-cur.execute(sql)
-
+# def connect_to_db():
+#     return 1
 def save_eml(pstName):
     archive = PffArchive(pstName)
     eml_out = Path(Path.cwd() / "emls")
     if not eml_out.exists():
-      eml_out.mkdir()
+        eml_out.mkdir()
     for folder in archive.folders():
         if folder.get_number_of_sub_messages() != 0:
             for message in folder.sub_messages:
                 name = message.subject.replace(" ", "_")
-                name = name.replace("/","-")
+                name = name.replace("/", "-")
                 filename = eml_out / f"{message.identifier}_{name}.eml"
                 filename.write_text(archive.format_message(message))
                 emailId = (message.identifier)
 
-time.sleep(5)
-save_eml('test.pst')
+def extract_attachments_from_message(message, folder_name):
+    attachments_info = []
+    attachment_names = []
 
+    for attachment in message.attachments:
+        attachment_name = attachment.name or "Unknown"
+        attachment_names.append(attachment_name)
+
+    if attachment_names:
+        info = f"{message.get_identifier()}^{folder_name}^{'____'.join(attachment_names)+'____'}"
+        attachments_info.append(info)
+
+    return attachments_info
+
+
+def get_attachments_info(folder, folder_name, depth=0):
+    attachments_info = []
+
+    for message in folder.sub_messages:
+        #print('id '+ message.entry_identifier)
+        attachments_info.extend(extract_attachments_from_message(message, folder_name))
+
+    for sub_folder in folder.sub_folders:
+        attachments_info.extend(get_attachments_info(sub_folder, f"{folder_name}^{sub_folder.name}", depth + 1))
+
+    return attachments_info
+
+def read_pst_main(pst):
+    #save_eml(pst)
+    time.sleep(5)
+    pst_file_path = pst
+    pst = pypff.file()
+    pst.open(pst_file_path)
+    root_folder = pst.get_root_folder()
+    attachments_info = get_attachments_info(root_folder, root_folder.name)
+
+    # Traverse through the folders and subfolders
+    for folder in root_folder.sub_folders:
+        for sub in folder.sub_folders:
+            # Traverse through the messages in the subfolder
+            for message in sub.sub_messages:
+                # Print the message_id
+                print(message.entry_identifier)
+    # for info in attachments_info:
+    #     info = info.split('^')
+    #     print(info[0] + ' ' + info[2] + ' ' + info[3])
+    pst.close()
+    return attachments_info
